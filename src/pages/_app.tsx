@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-toastify/dist/ReactToastify.css';
 import '@/src/styles/globals.css'
+import "react-datepicker/dist/react-datepicker.css";
 import type { AppProps } from 'next/app'
 import { useEffect } from 'react'
 

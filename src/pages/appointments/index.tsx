@@ -3,18 +3,18 @@ import { Footer } from '@/src/components/Footer'
 import { NavBar } from '@/src/components/NavBar'
 import { AppointmentsTable } from '@/src/components/AppointmentsTable'
 import { AppointmentsTableType } from '@/src/@types/appointments'
+import { extractFileData, buildFilePath } from '@/src/helpers/apiHandlers'
 
-import { buildFilePath, extractAppointmentstData } from '../api/appointments';
-
-
-
-export default function Appointments({appointments}: AppointmentsTableType) {
+export default function Appointments({
+  appointments,
+  doctors,
+}: AppointmentsTableType) {
   return (
     <>
       <Header />
-      <div className='d-flex'>
-      <NavBar />
-      <AppointmentsTable appointments={appointments}/>
+      <div className="d-flex">
+        <NavBar />
+        <AppointmentsTable appointments={appointments} doctors={doctors} />
       </div>
       <Footer />
     </>
@@ -22,11 +22,14 @@ export default function Appointments({appointments}: AppointmentsTableType) {
 }
 
 export async function getStaticProps() {
-  const filePath = buildFilePath();
-  const data = extractAppointmentstData(filePath)
+  const filePath = buildFilePath('appointments')
+  const appointmentsData = extractFileData(filePath)
+  const doctorsFilePath = buildFilePath('doctors')
+  const doctorsData = extractFileData(doctorsFilePath)
   return {
     props: {
-      appointments: data,
+      appointments: appointmentsData,
+      doctors: doctorsData,
     },
-  };
+  }
 }

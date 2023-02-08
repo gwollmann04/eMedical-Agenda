@@ -29,3 +29,11 @@ td {
 #navBarItem {
   color: #115551;
 }
+
+.list-group{
+  max-height: 300px;
+  margin-bottom: 10px;
+  overflow:scroll;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden
+}

@@ -1,5 +1,17 @@
+import { useState, useRef } from 'react'
+import { toast } from 'react-toastify'
+import { format } from 'date-fns'
+
 import { AppointmentsTableType } from '@/src/@types/appointments'
-import { useState } from 'react'
+
+import { DeleteModal, EditModal } from '../Modals'
+
+import {
+  validateDate,
+  validatePatientName,
+  validateDoctorName,
+  validateDayAvailable,
+} from '@/src/helpers/validators'
 
 const APPOINTMENTS_TABLE_HEADER = [
   'Nº da consulta',
@@ -9,25 +21,89 @@ const APPOINTMENTS_TABLE_HEADER = [
   '',
 ]
 
-const AppointmentsTable = ({ appointments }: AppointmentsTableType) => {
+const AppointmentsTable = ({
+  appointments,
+  doctors,
+  filterByDoctor,
+  doctorNameToFilter,
+}: AppointmentsTableType) => {
   const [appointment, setAppointment] = useState()
-  const [allAppointment, setAllAppointment] = useState(appointments)
+  const [allAppointments, setAllAppointments] = useState(appointments)
+  const [isNameInvalid, setNameIsInvalid] = useState(false)
+  const [isDoctorInvalid, setDoctorIsInvalid] = useState(false)
+  const [dateIsInvalid, setDateIsInvalid] = useState(false)
+  const [dateIsUnavailable, setDateIsUnavailable] = useState(false)
+  const [startDate, setStartDate] = useState(new Date())
+
+  const patientNameInputRef = useRef()
+  const doctorNameInputRef = useRef()
+
+  const filteredAppointments = filterByDoctor
+    ? allAppointments?.filter(
+        (appointment) => appointment.doctorName === doctorNameToFilter,
+      )
+    : allAppointments
 
   const handleDelete = () => {
     fetch(`/api/appointments/${appointment?.id}`, {
       method: 'DELETE',
     })
       .then((response) => response.json())
-      .then((data) => setAllAppointment(data?.appointmentData))
+      .then((data) => setAllAppointments(data?.appointmentData))
+
+    toast.success('Consulta excluída com sucesso!')
   }
 
-  const handleEdit = () => {
+  const handleEdit = (event: any) => {
+    event.preventDefault()
+    const patientName = patientNameInputRef?.current?.value
+    const doctorName = doctorNameInputRef?.current?.value
+
+    const isInvalidaDate = validateDate(startDate)
+    setDateIsInvalid(isInvalidaDate)
+
+    const isInvalidaPatientName = validatePatientName(patientName)
+    setNameIsInvalid(isInvalidaPatientName)
+
+    const isInvalidaDoctorName = validateDoctorName(doctorName)
+    setDoctorIsInvalid(isInvalidaDoctorName)
+
+    const getDoctorName = doctors.find(
+      (doctor) => doctor.id === Number(doctorName),
+    )
+
+    const isUnavailableDate = validateDayAvailable(
+      startDate,
+      allAppointments,
+      getDoctorName,
+    )
+    setDateIsUnavailable(isUnavailableDate)
+
+    if (
+      isInvalidaDate ||
+      isInvalidaPatientName ||
+      isInvalidaDoctorName ||
+      isUnavailableDate
+    )
+      return
+
+    const appointmentData = {
+      doctorName: getDoctorName?.doctorName,
+      patientName: patientName,
+      date: startDate,
+    }
+
     fetch(`/api/appointments/${appointment?.id}`, {
       method: 'PUT',
-      body: 'aa'
+      body: JSON.stringify(appointmentData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
       .then((response) => response.json())
-      /* .then((data) => setAllAppointment(data?.appointmentData)) */
+      .then((data) => setAllAppointments(data?.appointmentData))
+
+    toast.success('Consulta alterada com sucesso!')
   }
 
   return (
@@ -42,19 +118,24 @@ const AppointmentsTable = ({ appointments }: AppointmentsTableType) => {
         </thead>
 
         <tbody>
-          {allAppointment.map((item) => (
+          {filteredAppointments?.map((item) => (
             <tr key={item.id}>
               <td>{item.id}</td>
-              <td>{item.doctorName}</td>
               <td>{item.patientName}</td>
-              <td>{item.dateTime}</td>
+              <td>{item.doctorName}</td>
+              <td>{format(new Date(item.dateTime), 'dd/MM/yyyy - HH:mm')}</td>
               <td
                 className="d-flex justify-content-end border-bottom-0"
                 style={{
                   cursor: 'pointer',
                 }}
               >
-                <i className="fs-5 bi-pen me-3" />
+                <i
+                  className="fs-5 bi-pen me-3"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editModal"
+                  onClick={() => setAppointment(item)}
+                />
                 <i
                   className="fs-5 bi-trash"
                   data-bs-toggle="modal"
@@ -67,43 +148,20 @@ const AppointmentsTable = ({ appointments }: AppointmentsTableType) => {
         </tbody>
       </table>
 
-      <div
-        className="modal fade py-5"
-        role="dialog"
-        id="deleteModal"
-        tabIndex={-1}
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content rounded-4 bg-light">
-            <div className="modal-body p-4 text-center">
-              <h5 className="mb-1">Apagar esta consulta?</h5>
-              <p className="mb-0">
-                Esta consulta será permanentemente excluída!
-              </p>
-            </div>
+      <EditModal
+        handleEdit={handleEdit}
+        patientNameInputRef={patientNameInputRef}
+        doctorNameInputRef={doctorNameInputRef}
+        doctors={doctors}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        isNameInvalid={isNameInvalid}
+        isDoctorInvalid={isDoctorInvalid}
+        dateIsInvalid={dateIsInvalid}
+        dateIsUnavailable={dateIsUnavailable}
+      />
 
-            <div className="modal-footer flex-nowrap p-0">
-              <button
-                type="button"
-                className="btn btn-info"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteModal"
-                onClick={handleDelete}
-              >
-                Apagar consulta
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteModal"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DeleteModal handleDelete={handleDelete} />
     </div>
   )
 }

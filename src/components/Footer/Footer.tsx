@@ -6,7 +6,6 @@ const Footer = () => {
     event.preventDefault()
     toast.success('Copiado para a Área de transferência!')
   }
-  //To Do on click, copy to clipboard and show toast
   return (
     <footer className="fixed-bottom text-center">
       <div className="container p-4 col ">

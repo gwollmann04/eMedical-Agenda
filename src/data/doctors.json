@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "doctorName": "Manuela Bárbara Bernardes",
+        "patientsTreated": 12
+    },
+    {
+        "id": 2,
+        "doctorName": "Rodrigo Roberto César Ramos",
+        "patientsTreated": 20
+    },
+    {
+        "id": 3,
+        "doctorName": "Isabelle Vanessa Novaes",
+        "patientsTreated": 8
+    },
+    {
+        "id": 4,
+        "doctorName": "Yago Fábio Galvão",
+        "patientsTreated": 6
+    },
+    {
+        "id": 5,
+        "doctorName": "Jorge Amauri",
+        "patientsTreated": 15
+    },
+    {
+        "id": 6,
+        "doctorName": "Rogério Ricardo",
+        "patientsTreated": 26
+    }
+]

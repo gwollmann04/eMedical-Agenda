@@ -1,36 +1,25 @@
 import fs from 'fs'
-import path from 'path'
 
-export function buildFilePath() {
-  return path.join(process.cwd(), 'src', 'data', 'appointments.json')
-}
-
-export function extractAppointmentstData(filePath: string) {
-  const fileData = fs.readFileSync(filePath)
-  const data = JSON.parse(String(fileData))
-  return data
-}
+import { extractFileData, buildFilePath } from '@/src/helpers/apiHandlers'
 
 function handler(req, res) {
+  const filePath = buildFilePath('appointments')
+  const data = extractFileData(filePath)
   if (req.method === 'POST') {
-    const email = req.body.email
-    const feedbackText = req.body.text
+    const appointmentData = req.body
+    const indexOfLastEntry = data.length - 1
 
     const newAppointment = {
-      id: new Date().toISOString(),
-      email: email,
-      text: feedbackText,
+      patientName: appointmentData.patientName,
+      doctorName: appointmentData.doctorName,
+      dateTime: appointmentData.date,
+      id: data[indexOfLastEntry].id + 1,
     }
 
-    // store that in a database or in a file
-    const filePath = buildFilePath()
-    const data = extractAppointmentstData(filePath)
     data.push(newAppointment)
     fs.writeFileSync(filePath, JSON.stringify(data))
-    res.status(201).json({ message: 'Success!', appointment: newAppointment })
+    res.status(200).json({ message: 'Success!', appointments: data })
   } else {
-    const filePath = buildFilePath()
-    const data = extractAppointmentstData(filePath)
     res.status(200).json({ appointments: data })
   }
 }
