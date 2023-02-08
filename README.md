@@ -1,6 +1,20 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Informações Gerais:
+
+Projeto feito utilizando NextJS e Bootstrap5 com intuito de construir uma aplicação para area da saúde.
+
+Trata-se de uma agenda médica, onde o usuario pode criar/editar/remover consultas. Também é possível verificar algumas informaçoes gerais sobre o sistema, como a listagem de todos médicos, total de consultas realizadas e total de consultas marcadas.
+
+O sistema conta com algumas validações de input, tanto de texto como de data:
+- Não é possível inserir texto em branco
+- Não é possível agendar consulta nos finais de semana
+- Não é possível agendar consulta em dias que ja passaram
+- Não é possível agendar consulta em horário não comercial
+
+São utilizados arquivos json controlados pelo NextJS para simular requests a um banco de dados.
 
 ## Getting Started
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 

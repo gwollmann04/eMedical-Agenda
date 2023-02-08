@@ -8,7 +8,7 @@ export declare type AppointmentsTableType = {
   doctors: Array<{
     id: number
     doctorName: string
-    patientsTreated: string
+    patientsTreated: number
   }>
   filterByDoctor?: boolean
   doctorNameToFilter?: string

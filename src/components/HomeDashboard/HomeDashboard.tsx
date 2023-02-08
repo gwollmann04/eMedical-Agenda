@@ -8,12 +8,35 @@ const NewAppointmentForm = ({
 }: AppointmentsTableType) => {
   const [selectedDoctorName, setSelectedDoctorName] = useState('')
 
+  const totalPatientsTreated = doctors.reduce(
+    (startingNumber, doctor) => startingNumber + doctor.patientsTreated,
+    0,
+  )
+
   return (
     <div>
       <div className="container">
         <div className="row d-flex justify-content-center align-items-center p-5">
+          <div className="d-flex col px-0">
+            <div className="card me-4">
+              <h5
+                className="card-header"
+                style={{ backgroundColor: '#115551', color: '#e3fcfb' }}
+              >
+                Informações gerais
+              </h5>
+              <div className="card-body">
+                <h5 className="card-title">
+                  Total de médicos(as) cadastrados(as):
+                </h5>
+                <p className="card-text">{doctors?.length}</p>
+                <h5 className="card-title">Total de consultas realizadas:</h5>
+                <p className="card-text">{totalPatientsTreated}</p>
+                <h5 className="card-title">Total de consultas marcadas:</h5>
+                <p className="card-text">{appointments?.length}</p>
+              </div>
+            </div>
 
-          <div className='d-flex col'>
             <div className="panel panel-primary" id="result_panel">
               <div className="panel-heading">
                 <h4>Todos os(as) médicos(as)</h4>
@@ -57,7 +80,6 @@ const NewAppointmentForm = ({
                 </ul>
               </div>
             </div>
-            Dashboard
           </div>
         </div>
       </div>
