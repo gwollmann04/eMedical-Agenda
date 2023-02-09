@@ -8,8 +8,8 @@ const NavBar = () => {
   }
 
   return (
-    <div className="col-2 shadow p-3 mb-5 bg-white rounded" id="navBarItem">
-      <div className="d-flex flex-column align-items-sm-start px-3 pt-2 min-vh-100">
+    <div className="col-2 shadow p-3 bg-white rounded" id="navBarItem">
+      <div className="d-flex flex-column align-items-sm-start px-3 pt-2" style={{  height: '75vh'}}>
         <ul className="nav nav-pills flex-column mb-0">
           <li className="nav-item">
             <a

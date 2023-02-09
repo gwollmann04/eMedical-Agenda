@@ -10,7 +10,7 @@ import {
   validateDate,
   validatePatientName,
   validateDoctorName,
-  validateDayAvailable,
+  validateDayAvailable
 } from '@/src/helpers/validators'
 
 const APPOINTMENTS_TABLE_HEADER = [
